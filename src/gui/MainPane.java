@@ -1,7 +1,9 @@
 package gui;
 
 import io.CourseDataReader;
+import io.MajorMapReader;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -13,15 +15,26 @@ import java.util.Map;
 import java.util.Optional;
 
 public class MainPane extends Pane {
+
+    MajorMapReader mapReader = new MajorMapReader("src/io/major-map.txt");
+    Map<String, String> majorMap = mapReader.readMajorMap();
+    Course course;
+
     public MainPane(Map<String, String> majorMap) {
+        this.majorMap = majorMap;
 
         // Create the components
-        Button loadButton =  new Button("Load Data...");
+        Button loadButton = new Button("Load Data...");
         Label numberLabel = new Label("Number of students: ");
-        Label numberLabelValue = new Label("Pre Grade Factor: ");
+        Label numberLabelValue = new Label("0");
+        HBox studentcountBox= new HBox(numberLabel, numberLabelValue);
         TextArea textArea = new TextArea();
         textArea.setEditable(false);
-        Slider preGradeFactorSlider = new Slider(0,100,30);
+        Label factorLabel = new Label("Pre Grade Factor[%]: ");
+        Slider preGradeFactorSlider = new Slider(0, 100, 30);
+        preGradeFactorSlider.setShowTickMarks(true);
+        preGradeFactorSlider.setShowTickLabels(true);
+        preGradeFactorSlider.setMajorTickUnit(10);
 
 // Define the logic
         loadButton.setOnAction(event -> {
@@ -33,48 +46,52 @@ public class MainPane extends Pane {
                     Optional<Course> c = dataReader.get().readData(dataFile);
 
                     if (c.isPresent()) {
-                        Course course;
                         course = c.get();
 
-                        for (Student student : course.getStudents()) {
-                            String major;
-                            if (majorMap.containsKey(student.getMajor())) {
-                                major = majorMap.get(student.getMajor());
-                            } else {
-                                major = student.getMajor();
-                            }
-                            String studentText = (student + ": "+ Math.round(student.getFinalGrade(preGradeFactorSlider.getValue()) * 10) / 10.0);
-                            textArea.setText(studentText);
-                            numberLabel.setText(String.valueOf(course.getStudents().size()));
-
-
-                            refreshText(course, numberLabelValue, textArea, preGradeFactorSlider.getValue());
-                        }
-
-                    } else {
-                        Alert alert = new Alert (Alert.AlertType.ERROR, "Unable to read course data from file " + dataFile);
-                        alert.showAndWait();
+                        refreshText(course,numberLabel, numberLabelValue, textArea, preGradeFactorSlider.getValue());
                     }
+
                 } else {
-                    Alert alert = new Alert (Alert.AlertType.ERROR, "File format unknown for file " + dataFile);
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to read course data from file " + dataFile);
                     alert.showAndWait();
-                } }
+                }
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "File format unknown for file ");
+                alert.showAndWait();
+            }
         });
+
 // For a slider, we need to attach an event listener to the value property of the slider
         preGradeFactorSlider.valueProperty().addListener(observable -> {
-            //[refreshText...]
+            refreshText(course,numberLabel, numberLabelValue, textArea, preGradeFactorSlider.getValue());
         });
+
 // Layout the components
         VBox mainPane = new VBox();
-        mainPane.getChildren().add(loadButton);
-        mainPane.getChildren().add(numberLabel);
-        mainPane.getChildren().add(numberLabelValue);
-        mainPane.getChildren().add(preGradeFactorSlider);
-        //[...add and layout the other components]
+        mainPane.getChildren().addAll(loadButton, studentcountBox, textArea,factorLabel, preGradeFactorSlider);
         this.getChildren().add(mainPane);
     }
 
-    private void refreshText(Course course, Label numberLabelValue, TextArea textArea, double value) {
+    private void refreshText(Course course,Label numberLabel, Label numberLabelValue, TextArea textArea, double preGradeFactorSlider) {
 
+        textArea.clear();
+        double preGradeFactor = preGradeFactorSlider / 100;
+
+        for (Student student : course.getStudents()) {
+            String major;
+            if (majorMap.containsKey(student.getMajor())) {
+                major = majorMap.get(student.getMajor());
+            } else {
+                major = student.getMajor();
+            }
+            String studentText = "The final grade for " + student + " (" + major + ") is: " +student.getFinalGrade(preGradeFactor)+ "\n";
+            textArea.appendText(studentText);
+            numberLabelValue.setText(String.valueOf(course.getStudents().size()));
+
+            String studentLabel = "Number of students: ";
+            numberLabel.setText(studentLabel);
+
+        }
     }
+
 }

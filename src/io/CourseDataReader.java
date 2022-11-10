@@ -16,6 +16,8 @@ public interface CourseDataReader {
             return Optional.of(new TagValueDataReader(dataFile));
         }
         return Optional.empty();
+
     }
+
 
 }
