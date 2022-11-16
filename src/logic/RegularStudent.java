@@ -47,7 +47,7 @@ public class RegularStudent extends Student {
 
     @Override
     public double getFinalGrade(double preGradeFactor) {
-        double note = getAverage() * preGradeFactor + examGrade * (1 - preGradeFactor);
+        double note = Math.round((getAverage() * preGradeFactor + examGrade * (1 - preGradeFactor))*10)/10.0;
         return note;
     }
 }
