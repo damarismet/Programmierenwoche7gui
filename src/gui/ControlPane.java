@@ -20,7 +20,7 @@ public class ControlPane extends StackPane {
     Map<String, String> majorMap = mapReader.readMajorMap();
     Course course;
 
-    public ControlPane(Map<String, String> majorMap, GraphicsPane graphicsPane) {
+    public ControlPane(Map<String, String> majorMap, StateModel stateModel) {
         this.majorMap = majorMap;
 
 
@@ -49,9 +49,11 @@ public class ControlPane extends StackPane {
 
                     if (c.isPresent()) {
                         course = c.get();
+                        stateModel.setCourse(course);
 
-                        refreshText(course,numberLabel, numberLabelValue, textArea, preGradeFactorSlider.getValue());
-                        graphicsPane.setStudents(course.getStudents());
+                        //refreshText(course,numberLabel, numberLabelValue, textArea, preGradeFactorSlider.getValue());
+
+
                     }
 
                 } else {
@@ -66,9 +68,14 @@ public class ControlPane extends StackPane {
 
 // For a slider, we need to attach an event listener to the value property of the slider
         preGradeFactorSlider.valueProperty().addListener(observable -> {
-            refreshText(course,numberLabel, numberLabelValue, textArea, preGradeFactorSlider.getValue());
-            graphicsPane.setPreGradeFactor(preGradeFactorSlider.getValue()/100);
+            //refreshText(course,numberLabel, numberLabelValue, textArea, preGradeFactorSlider.getValue());
+            stateModel.setPreGradeFactor(preGradeFactorSlider.getValue()/100);
+
         });
+stateModel.addObserver(() -> {
+            refreshText(course,numberLabel, numberLabelValue, textArea, preGradeFactorSlider.getValue());
+        });
+
 
 // Layout the components
         VBox mainPane = new VBox();

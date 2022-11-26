@@ -18,8 +18,10 @@ public class MainPane extends StackPane {
 
     public MainPane() {
 
-        GraphicsPane graphicsPane = new GraphicsPane();
-        ControlPane controlPane = new ControlPane(majorMap, graphicsPane);
+        StateModel stateModel = new StateModel();
+
+        GraphicsPane graphicsPane = new GraphicsPane(stateModel);
+        ControlPane controlPane = new ControlPane(majorMap, stateModel);
 
         // Layout the components
         //-----------------------
