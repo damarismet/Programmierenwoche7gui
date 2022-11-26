@@ -2,7 +2,6 @@ package gui;
 
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -31,12 +30,9 @@ public class GraphicsPane extends Pane {
         vBox.getChildren().addAll(checkBox, graphic);
 
 
-        checkBox.setOnAction(event -> {
-            stateModel.setSortByGrade(checkBox.isSelected());
-        });
-        stateModel.addObserver(() -> {
-            drawGraphic(stateModel, checkBox);
-        });
+        checkBox.setOnAction(event -> stateModel.setSortByGrade(checkBox.isSelected()));
+        stateModel.addObserver(() -> drawGraphic(stateModel, checkBox));
+
         widthProperty().addListener(observable -> drawGraphic(stateModel, checkBox));
         heightProperty().addListener(observable -> drawGraphic(stateModel, checkBox));
 
@@ -54,7 +50,7 @@ public class GraphicsPane extends Pane {
         if (stateModel.getCourse() != null) {
             List<Student> students = stateModel.getCourse().getStudents();
 
-            double barWidth = getWidth() / stateModel.getCourse().getStudents().size();
+            double barWidth = getWidth() / students.size();
             final double GRADE_THRESHOLD = 4;
 
             for (int i = 0; i < students.size(); i++) {
@@ -84,14 +80,6 @@ public class GraphicsPane extends Pane {
             }
             Line line = new Line(0, getHeight() - (GRADE_THRESHOLD * (getHeight() / 6.0)),
                    getWidth(), getHeight() - (GRADE_THRESHOLD * (getHeight() / 6.0)));
-
-            //Line line = new Line(0, graphic.getHeight() - (GRADE_THRESHOLD * (graphic.getHeight() / 6.0)),
-                    //graphic.getWidth(), graphic.getHeight() - (GRADE_THRESHOLD * (graphic.getHeight() / 6.0)));
-//oben zwei Linien richtige Version
-
-            //Line line= new Line(0, getHeight() - (GRADE_THRESHOLD * (getHeight() / 6.0)), 0, getHeight() - (GRADE_THRESHOLD * (getHeight() / 6.0)));
-            //Line line=new Line(10,graphic.getHeight()-((this.getHeight()-20)*4/6)-10,graphic.getWidth()-10,((this.getHeight()-20)*4/6)-10);
-
 
             line.setStroke(Color.RED);
             getChildren().add(line);

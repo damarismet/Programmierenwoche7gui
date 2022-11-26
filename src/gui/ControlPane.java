@@ -72,9 +72,7 @@ public class ControlPane extends StackPane {
             stateModel.setPreGradeFactor(preGradeFactorSlider.getValue()/100);
 
         });
-stateModel.addObserver(() -> {
-            refreshText(course,numberLabel, numberLabelValue, textArea, preGradeFactorSlider.getValue());
-        });
+stateModel.addObserver(() -> refreshText(course,numberLabel, numberLabelValue, textArea, preGradeFactorSlider.getValue()));
 
 
 // Layout the components
