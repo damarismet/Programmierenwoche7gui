@@ -35,25 +35,26 @@ public class GraphicsPane extends Pane {
             stateModel.setSortByGrade(checkBox.isSelected());
         });
         stateModel.addObserver(() -> {
-            drawGraphic(stateModel, graphic);
+            drawGraphic(stateModel, checkBox);
         });
-        widthProperty().addListener(observable -> drawGraphic(stateModel, graphic));
-        heightProperty().addListener(observable -> drawGraphic(stateModel, graphic));
+        widthProperty().addListener(observable -> drawGraphic(stateModel, checkBox));
+        heightProperty().addListener(observable -> drawGraphic(stateModel, checkBox));
 
         getChildren().add(vBox);
 
     }
 
 
-    private void drawGraphic(StateModel stateModel, Pane graphic) {
+    private void drawGraphic(StateModel stateModel, CheckBox checkBox) {
 
-        graphic.getChildren().clear();
+        getChildren().clear();
+        getChildren().add(checkBox);
 
 
         if (stateModel.getCourse() != null) {
             List<Student> students = stateModel.getCourse().getStudents();
 
-            double barWidth = getWidth() / students.size();
+            double barWidth = getWidth() / stateModel.getCourse().getStudents().size();
             final double GRADE_THRESHOLD = 4;
 
             for (int i = 0; i < students.size(); i++) {
