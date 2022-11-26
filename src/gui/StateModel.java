@@ -12,7 +12,6 @@ public class StateModel {
     private double preGradeFactor;
     private boolean sortByGrade;
 
-    private ArrayList<Student> students;
 
 
     List<StateObserver> observers;

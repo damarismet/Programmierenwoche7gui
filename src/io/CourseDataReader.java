@@ -11,7 +11,7 @@ public interface CourseDataReader {
 
     static Optional<CourseDataReader> getReader(File dataFile) {
         if (dataFile.getName().endsWith(".csv")) {
-            return Optional.of(new CsvDataReader(dataFile));
+            return Optional.of(new CsvDataReader());
         } else if (dataFile.getName().endsWith(".txt")) {
             return Optional.of(new TagValueDataReader(dataFile));
         }

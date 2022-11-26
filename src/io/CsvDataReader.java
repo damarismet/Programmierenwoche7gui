@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 public class CsvDataReader implements CourseDataReader{
 
-    public CsvDataReader(File fileName) {
+    public CsvDataReader() {
     }
 
     public Optional<Course> readData(File file) {
